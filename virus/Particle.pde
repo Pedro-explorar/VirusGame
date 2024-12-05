@@ -91,11 +91,11 @@ class Particle{
     }
     c.genome.rotateOn += INJECT_SIZE;
     if(c.tampered){ // cell is already tampered by someone
-      cellCounts[7+c.tampered_team]--; // virus particle in the cell BEFORE this UFO injects, is decreased 
+      cellCounts[8+c.tampered_team]--; // virus particle in the cell BEFORE this UFO injects, is decreased 
     }
     c.tamper(team);
-    cellCounts[5+team]--; // virus particles in the bloodstream decreased
-    cellCounts[7+team]++; // virus particles in the cell increased
+    cellCounts[6+team]--; // virus particles in the bloodstream decreased
+    cellCounts[8+team]++; // virus particles in the cell increased
     
     removeParticle();
     Particle newWaste = new Particle(coor,1,-99999);

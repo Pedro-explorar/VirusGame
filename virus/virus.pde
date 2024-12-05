@@ -15,19 +15,20 @@ double GENE_TICK_TIME = 40.0;
 double HISTORY_TICK_TIME = 160.0;
 double margin = 4;
 int START_LIVING_COUNT = 0;
-int[] cellCounts = {0,0,0,0,0,0,0,0,0};
+int[] cellCounts = {0,0,0,0,0,0,0,0,0,0};
 /*
 CATEGORIES FOR THE VIRUS SIM CENSUS
 
 0 - Cell - healthy
 1 - Cell - tampered by Team 0
 2 - Cell - tampered by Team 1
-3 - Cell - dead by Team 0, or not by virus
-4 - Cell - dead by Team 1
-5 - Virus - in blood, Team 0
-6 - Virus - in blood, Team 1
-7 - Virus - in cells, Team 0
-8 - Virus - in cells, Team 1
+3 - Cell - dead not by virus
+4 - Cell - dead by Team 0
+5 - Cell - dead by Team 1
+6 - Virus - in blood, Team 0
+7 - Virus - in blood, Team 1
+8 - Virus - in cells, Team 0
+9 - Virus - in cells, Team 1
 */
 
 int frame_count = 0;
@@ -427,7 +428,7 @@ void produceUGO(double[] coor){
     particles.get(2).add(newUGO);
     newUGO.addToCellList();
     lastEditTimeStamp = frame_count;
-    cellCounts[5+team]++; // one more virus in the bloodstream
+    cellCounts[6+team]++; // one more virus in the bloodstream
     team_produce += 1;
   }
 }
@@ -490,9 +491,13 @@ void twoSizeFont(String str, float s1, float s2, float x, float y){
 int bc(int i){ // basic count
   if(i == 0){
     return cellCounts[0];
+  }else if(i == 2){
+    return cellCounts[3]+cellCounts[4]+cellCounts[5];
+  }else if(i > 2){
+    return cellCounts[i*2]+cellCounts[i*2+1];
   }else{
-    return cellCounts[i*2-1]+cellCounts[i*2];
-  } 
+    return cellCounts[1]+cellCounts[2];
+  }
 }
 void drawUI(){
   pushMatrix();
@@ -541,22 +546,22 @@ void drawSpeedButtons(){
 void drawHistory(){
   recordHistory(frame_count);
   if(team_produce <= 1){
-    int[] indices = {0,1,3};
-    int[] labels = {0,1,2,3};
-    color[] colors = {WALL_COLOR, TAMPERED_COLOR[0], DEAD_COLOR};
-    String[] names = {"H","T","D"};
-    int[] indices2 = {7,5};
+    int[] indices = {0,1,4,3};
+    int[] labels = {0,1,2,3,4};
+    color[] colors = {WALL_COLOR, TAMPERED_COLOR[0], darken(TAMPERED_COLOR[0],0.5), DEAD_COLOR};
+    String[] names = {"H","T","DV","D"};
+    int[] indices2 = {8,6};
     int[] labels2 = {0,1,2};
     color[] colors2 = {darken(TAMPERED_COLOR[0],0.5),TAMPERED_COLOR[0]};
     String[] names2 = {"C","B"};
     drawGraph(indices,labels,colors,names,20,613,358,true);
     drawGraph(indices2,labels2,colors2,names2,20,835,185,false);
   }else{
-    int[] indices = {0,2,4,1,3};
-    int[] labels = {0,1,3,5};
-    color[] colors = {WALL_COLOR, TAMPERED_COLOR[1], darken(TAMPERED_COLOR[1],0.5), TAMPERED_COLOR[0], darken(TAMPERED_COLOR[0],0.5)};
-    String[] names = {"CH","CB","CA"};
-    int[] indices2 = {8,6,7,5};
+    int[] indices = {0,2,5,1,4,3};
+    int[] labels = {0,1,3,5,6};
+    color[] colors = {WALL_COLOR, TAMPERED_COLOR[1], darken(TAMPERED_COLOR[1],0.5), TAMPERED_COLOR[0], darken(TAMPERED_COLOR[0],0.5), DEAD_COLOR};
+    String[] names = {"CH","CB","CA","CD"};
+    int[] indices2 = {9,7,8,6};
     int[] labels2 = {0,2,4};
     color[] colors2 = {darken(TAMPERED_COLOR[1],0.5),TAMPERED_COLOR[1], darken(TAMPERED_COLOR[0],0.5), TAMPERED_COLOR[0]};
     String[] names2 = {"VB","VA"};
@@ -585,7 +590,7 @@ void drawGraph(int[] indices, int[] labels, color[] colors, String[] names, floa
     int county = 6;
     for(int i = 0; i < window; i++){
       int[] datum = history.get(start_i+i);
-      county = max(county,datum[5]+datum[6]+datum[7]+datum[8]);
+      county = max(county,datum[6]+datum[7]+datum[8]+datum[9]);
     }
     H_C = -H/county;
   }

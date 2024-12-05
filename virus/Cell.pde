@@ -183,8 +183,8 @@ class Cell{
         if(wasteToPushOut != null){
           pushOut(wasteToPushOut);
           if(info[1] == 3){
-            cellCounts[7+tampered_team] --;
-            cellCounts[5+tampered_team] ++;
+            cellCounts[8+tampered_team] --;
+            cellCounts[6+tampered_team] ++;
           }
         }
       }else if(info[1] == 4){
@@ -258,7 +258,7 @@ class Cell{
     Particle newUGO = new Particle(newUGOcoor,2,memory,frame_count,tampered_team);
     particles.get(2).add(newUGO);
     sfx[2].play();
-    cellCounts[7+tampered_team]++; // one more virus in the cells
+    cellCounts[8+tampered_team]++; // one more virus in the cells
     newUGO.addToCellList();
     laserTarget = newUGO;
     
@@ -375,10 +375,10 @@ class Cell{
     int freedVirusCount = particlesInCell.get(2).size();
     if(tampered_team >= 0){
       if(tampered){
-        cellCounts[7+tampered_team]--; // virus in its own body is decreased by one
+        cellCounts[8+tampered_team]--; // virus in its own body is decreased by one
       }
-      cellCounts[7+tampered_team] -= freedVirusCount; // viruses in the cells decreased (since they're free)
-      cellCounts[5+tampered_team] += freedVirusCount; // viruses in the bloodstream increased (since they're free)
+      cellCounts[8+tampered_team] -= freedVirusCount; // viruses in the cells decreased (since they're free)
+      cellCounts[6+tampered_team] += freedVirusCount; // viruses in the bloodstream increased (since they're free)
     }
     for(int i = 0; i < genome.codons.size(); i++){
       Particle newWaste = new Particle(getCodonCoor(i,genome.CODON_DIST),1,-99999);
@@ -391,13 +391,11 @@ class Cell{
     }
     if(tampered && tampered_team >= 0){
       cellCounts[1+tampered_team]--;
-      cellCounts[3+tampered_team]++;
+      cellCounts[4+tampered_team]++;
     }else{
       cellCounts[0]--;
       cellCounts[3]++;
-      // when a cell dies without being tampered with, it's considered a death by Team 0.
-      // I know this isn't "fair", but this happens so rarely that I didn't want to bother
-      // coding a whole new section of the graph just for that edge case.
+      // when a cell dies without being tampered with, it's considered a death by no team.
     }
     sfx[0].play();
     if(cellCounts[0] == 0 && cellCounts[1] == 0 && cellCounts[2] == 0){
