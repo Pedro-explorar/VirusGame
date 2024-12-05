@@ -172,43 +172,47 @@ class Cell{
         if(foodToEat != null){
           eat(foodToEat);
         }
-      }else if(info[1] == 3){ // digest "wall"
+      }else if(info[1] == 4){ // digest "wall"
         energy += (1-energy)*E_RECIPROCAL*0.2;
         hurtWall(26);
         laserWall();
       }
     }else if(info[0] == 2 && genome.directionOn == 0){
-      if(info[1] == 1 || info[1] == 2){
+      if(info[1] == 1 || info[1] == 2 || info[1] == 3){
         Particle wasteToPushOut = selectParticleInCell(info[1]-1);
         if(wasteToPushOut != null){
           pushOut(wasteToPushOut);
+          if(info[1] == 3){
+            cellCounts[7+tampered_team] --;
+            cellCounts[5+tampered_team] ++;
+          }
         }
-      }else if(info[1] == 3){
+      }else if(info[1] == 4){
         die();
       }
     }else if(info[0] == 3 && genome.directionOn == 0){
       if(info[1] == 1 || info[1] == 2){
         Particle particle = selectParticleInCell(info[1]-1);
         shootLaserAt(particle);
-      }else if(info[1] == 3){
+      }else if(info[1] == 4){
         healWall();
       }
     }else if(info[0] == 4){
-      if(info[1] == 4){
+      if(info[1] == 5){
         genome.performerOn = genome.getWeakestCodon();
-      }else if(info[1] == 5){
-        genome.directionOn = 1;
       }else if(info[1] == 6){
-        genome.directionOn = 0;
+        genome.directionOn = 1;
       }else if(info[1] == 7){
+        genome.directionOn = 0;
+      }else if(info[1] == 8){
         genome.performerOn = loopItInt(genome.rotateOn+info[2],genome.codons.size());
       }
     }else if(info[0] == 5 && genome.directionOn == 1){
-      if(info[1] == 7){
+      if(info[1] == 8){
         readToMemory(info[2],info[3]);
       }
     }else if(info[0] == 6){
-      if(info[1] == 7 || genome.directionOn == 0){
+      if(info[1] == 8 || genome.directionOn == 0){
         writeFromMemory(info[2],info[3]);
       }
     }
